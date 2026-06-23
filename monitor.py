@@ -15,6 +15,7 @@ HEADERS = {
     "referer": "https://tickets.tazkartifanzone.com/",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
 }
+
 def send_telegram(message):
     response = requests.post(
         f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
@@ -27,19 +28,8 @@ def send_telegram(message):
     print(f"Telegram status: {response.status_code}")
     print(f"Telegram response: {response.text}")
 
-def send_telegram(message):
-    response = requests.post(
-        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
-        json={
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "HTML"
-        }
-    )
-    print(f"Telegram sent: {response.status_code}")
-
 def check_events():
-    print(f"Checking API...")
+    print("Checking API...")
 
     try:
         response = requests.get(API_URL, headers=HEADERS, timeout=15)
@@ -48,20 +38,23 @@ def check_events():
         data = response.json()
         print(f"Response: {json.dumps(data)[:300]}")
 
-        if True:
-            event = data.get("event", {})
+        success = data.get("success", False)
+        event = data.get("event")
+
+        if success and event:
             event_name = event.get("name") or event.get("title") or "New Event"
             event_date = event.get("date") or event.get("startDate") or ""
-
             print(f"EVENT FOUND: {event_name}")
             send_telegram(
-                "New Event on Egyptian Fan Zone!\n\n"
+                f"New Event on Egyptian Fan Zone!\n\n"
                 f"Event: {event_name}\n"
                 f"Date: {event_date}\n\n"
-                "Book Now: https://tickets.tazkartifanzone.com"
+                f"Book Now: https://tickets.tazkartifanzone.com"
             )
         else:
             print("No events yet. Will check again in 15 minutes.")
+            # TEMPORARY: test Telegram is working
+            send_telegram("EFZ Monitor is alive! No events yet.")
 
     except Exception as e:
         print(f"Error: {e}")
