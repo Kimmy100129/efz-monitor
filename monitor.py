@@ -38,26 +38,22 @@ def check_events():
         data = response.json()
         print(f"Response: {json.dumps(data)[:300]}")
 
-        success = data.get("success", False)
         event = data.get("event")
 
-        if success and event:
-            event_name = event.get("name") or event.get("title") or "New Event"
-            event_date = event.get("date") or event.get("startDate") or ""
-            print(f"EVENT FOUND: {event_name}")
+        if event is None:
+            print("No events yet. Will check again in 15 minutes.")
+            send_telegram("EFZ Monitor ✅ Checked — No events yet.")
+        else:
+            print(f"EVENT FOUND: {event}")
             send_telegram(
-                f"New Event on Egyptian Fan Zone!\n\n"
-                f"Event: {event_name}\n"
-                f"Date: {event_date}\n\n"
+                f"🎟 New Event on Egyptian Fan Zone!\n\n"
+                f"{json.dumps(event, indent=2)}\n\n"
                 f"Book Now: https://tickets.tazkartifanzone.com"
             )
-        else:
-            print("No events yet. Will check again in 15 minutes.")
-            # TEMPORARY: test Telegram is working
-            send_telegram("EFZ Monitor is alive! No events yet.")
 
     except Exception as e:
         print(f"Error: {e}")
+        send_telegram(f"⚠️ EFZ Monitor error: {e}")
 
 if __name__ == "__main__":
     check_events()
