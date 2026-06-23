@@ -15,6 +15,17 @@ HEADERS = {
     "referer": "https://tickets.tazkartifanzone.com/",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
 }
+def send_telegram(message):
+    response = requests.post(
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+        json={
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+    )
+    print(f"Telegram status: {response.status_code}")
+    print(f"Telegram response: {response.text}")
 
 def send_telegram(message):
     response = requests.post(
@@ -37,7 +48,7 @@ def check_events():
         data = response.json()
         print(f"Response: {json.dumps(data)[:300]}")
 
-        if data.get("success") == True and data.get("event") is not None:
+        if True:
             event = data.get("event", {})
             event_name = event.get("name") or event.get("title") or "New Event"
             event_date = event.get("date") or event.get("startDate") or ""
