@@ -1,6 +1,6 @@
 # 🏟️ EFZ Event Monitor — Direct API Version
 
-Hits the **KNOT Technologies API** directly every 15 minutes.
+Hits the **KNOT Technologies API** directly every 10 minutes.
 No browser, no scraping — reads the real JSON data instantly.
 Sends a **Telegram message** the moment events appear. 100% free on GitHub.
 
